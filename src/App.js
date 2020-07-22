@@ -34,7 +34,7 @@ class App extends Component {
     localStorage.setItem('todoList', JSON.stringify(this.state.toDoList))
   }
   loadSavedTodos () {
-    const savedTodos = JSON.parse(localStorage.getItem('todoList'))
+    const savedTodos = JSON.parse(localStorage.getItem('todoList')) || []
     return savedTodos
   }
 
