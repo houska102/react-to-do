@@ -15,7 +15,7 @@ class App extends Component {
     this.state = {
       newName: '',
       newDescription: '',
-      toDoList: []
+      toDoList: this.loadSavedTodos()
     }
   } 
 
@@ -23,7 +23,6 @@ class App extends Component {
     this.setState({
       newName: newValue
     })
-
   }
   newDescriptionChangeHandler =  (newValue) => {
     this.setState({
@@ -31,8 +30,16 @@ class App extends Component {
     })
   }
 
-  deleteTodoHandler  = (id) => {
-    this.setState({
+  saveTodos () {
+    localStorage.setItem('todoList', JSON.stringify(this.state.toDoList))
+  }
+  loadSavedTodos () {
+    const savedTodos = JSON.parse(localStorage.getItem('todoList'))
+    return savedTodos
+  }
+
+  deleteTodoHandler  = async(id) => {
+    await this.setState({
       toDoList: this.state.toDoList.reduce((accu, item) => {
         if (item.id !== id) {
           accu.push(item)
@@ -40,19 +47,21 @@ class App extends Component {
         return accu
       }, [])
     })
+    this.saveTodos()
   }
-  addTodoHandler  = () => {
+  addTodoHandler  = async() => {
     const newId = getFreeId(this.state.toDoList)
     const newTodo = {
       id: newId,
       name: this.state.newName,
       description: this.state.newDescription
     }
-    this.setState({
+    await this.setState({
       toDoList: [...this.state.toDoList, newTodo],
       newDescription: '',
       newName: ''
     })
+    this.saveTodos()
   }
 
   generateTodoList () {
